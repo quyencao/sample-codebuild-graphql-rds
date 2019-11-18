@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     id: {
       type: DataTypes.NUMBER,
       allowNull: false,
-      primaryKey: true
+      primaryKey: true,
+      autoIncrement: true
     },
     text: {
       type: DataTypes.TEXT,
@@ -14,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: false
     }
-  }, {})
+  }, { timestamps: false })
   Todos.associate = function(models) {
     // associations can be defined here
   }
