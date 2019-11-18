@@ -1,0 +1,29 @@
+tables:
+  todos:
+    fields:
+      - id:
+          type: serial
+          unique: true
+          not_null: true
+      - text:
+          type: text
+          unique: true
+          not_null: true
+      - completed:
+          type: bool
+          unique: false
+          not_null: true
+    primary_keys:
+      - id
+
+types:
+  - name: Todo
+    ref: todos
+    fields:
+      - name: text
+        type: String
+        required: true
+      - name: completed
+        type: Boolean
+        required: false
+
