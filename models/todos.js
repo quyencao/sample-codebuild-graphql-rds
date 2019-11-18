@@ -3,15 +3,15 @@ module.exports = (sequelize, DataTypes) => {
   const Todos = sequelize.define('todos', {
     id: {
       type: DataTypes.NUMBER,
-      AllowNull: false
+      allowNull: false
     },
     text: {
       type: DataTypes.TEXT,
-      AllowNull:false
+      allowNull: false
     },
     completed: {
       type: DataTypes.BOOLEAN,
-      AllowNull:false
+      allowNull: false
     }
   }, {})
   Todos.associate = function(models) {
