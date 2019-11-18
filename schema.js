@@ -3,7 +3,7 @@ const { gql } = require("apollo-server-lambda");
 const typeDefs = gql`
 type Mutation {
   createTodo(input: CreateTodoInput!): Todo!
-  updateTodo(input: UpdateTodoInput!): Todo!
+  updateTodo(id: ID!, input: UpdateTodoInput!): Todo!
   deleteTodo(id: ID!): Boolean!
 }
 
