@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       AllowNull:false
     },
     completed: {
+      type: DataTypes.BOOLEAN,
       AllowNull:false
     }
   }, {})
