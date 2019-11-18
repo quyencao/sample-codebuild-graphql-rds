@@ -6,11 +6,7 @@ const Sequelize = require('sequelize')
 const basename = path.basename(__filename)
 // const env = process.env.NODE_ENV || 'development'
 const db = {}
-process.env.DB_NAME = "graphql"
-process.env.DB_USERNAME = "graphql"
-process.env.DB_PASSWORD = "password"
-process.env.DB_HOST = "appidhere2.c2ibmw2zmffn.us-east-1.rds.amazonaws.com"
-process.env.DB_PORT = 5432;
+
 const sequelize = new Sequelize(process.env.DB_NAME, 
     process.env.DB_USERNAME, process.env.DB_PASSWORD, {
         host: process.env.DB_HOST,
