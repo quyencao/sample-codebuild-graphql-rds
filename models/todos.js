@@ -3,7 +3,8 @@ module.exports = (sequelize, DataTypes) => {
   const Todos = sequelize.define('todos', {
     id: {
       type: DataTypes.NUMBER,
-      allowNull: false
+      allowNull: false,
+      primaryKey: true
     },
     text: {
       type: DataTypes.TEXT,
