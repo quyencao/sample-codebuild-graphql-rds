@@ -12,7 +12,11 @@ const resolver = {
                 });
         },
         getTodos: (_, args) => {
-            return db.todos.findAll()
+            return db.todos.findAll({
+                            order: [
+                                ["id", "DESC"]
+                            ]
+                        })
                         .then(items => {
                             return items.map(item => item.dataValues);
                         })
