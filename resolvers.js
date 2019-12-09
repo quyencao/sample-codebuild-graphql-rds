@@ -1,5 +1,11 @@
+const {
+    DynamoDBEventStore,
+    PubSub
+} = require('aws-lambda-graphql');
 const db = require('./models');
-const { pubSub } = require('./graphqlServerHelper')
+// const { pubSub } = require('./graphqlServerHelper');
+const eventStore = new DynamoDBEventStore({ eventsTable: process.env.EVENTS_TABLE });
+const pubSub = new PubSub({ eventStore });
 
 const resolver = {
     Query: {
@@ -61,7 +67,7 @@ const resolver = {
         },
     },
     Subscription: {
-        createTodo: {
+        createTodoMessage: {
             resolve: rootValue => rootValue,
             subscribe: pubSub.subscribe('CREATE_TODO')
         }

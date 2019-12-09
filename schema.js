@@ -13,7 +13,7 @@ type Query {
 }
 
 type Subscription {
-  createTodo: Todo!
+  createTodoMessage: Todo!
 }
 
 input CreateTodoInput {
