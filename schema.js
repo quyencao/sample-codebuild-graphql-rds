@@ -12,6 +12,10 @@ type Query {
   getTodos: [Todo!]
 }
 
+type Subscription {
+  createTodo: Todo!
+}
+
 input CreateTodoInput {
   text: String!
   completed: Boolean

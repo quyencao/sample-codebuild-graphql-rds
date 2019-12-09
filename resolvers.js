@@ -1,4 +1,5 @@
 const db = require('./models');
+const { pubSub } = require('./graphqlServerHelper')
 
 const resolver = {
     Query: {
@@ -23,9 +24,14 @@ const resolver = {
     },
     Mutation: {
         createTodo: (_, args) => {
+            let fetchData;
             return db.todos.create(args.input)
                 .then(data => {
-                    return data.dataValues;
+                    fetchData = data.dataValues;
+                    return pubSub.publish('CREATE_TODO', data.dataValues);
+                })
+                .then(() => {
+                    return fetchData;
                 })
                 .catch(err => {
                     throw err;
@@ -53,6 +59,12 @@ const resolver = {
                 throw err;
             })
         },
+    },
+    Subscription: {
+        createTodo: {
+            resolve: rootValue => rootValue,
+            subscribe: pubSub.subscribe('CREATE_TODO')
+        }
     }
 }
 
