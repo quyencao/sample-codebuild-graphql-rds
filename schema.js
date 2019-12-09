@@ -32,4 +32,3 @@ type Todo {
 `;
 
 module.exports = typeDefs;
-

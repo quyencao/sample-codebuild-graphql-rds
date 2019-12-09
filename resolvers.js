@@ -12,18 +12,14 @@ const resolver = {
                 });
         },
         getTodos: (_, args) => {
-            return db.todos.findAll({
-                            order: [
-                                ["id", "DESC"]
-                            ]
-                        })
+            return db.todos.findAll()
                         .then(items => {
                             return items.map(item => item.dataValues);
                         })
                         .catch(err => {
                             throw err;
                         });
-        }
+        },
     },
     Mutation: {
         createTodo: (_, args) => {
@@ -56,7 +52,7 @@ const resolver = {
             .catch(err => {
                 throw err;
             })
-        }
+        },
     }
 }
 
