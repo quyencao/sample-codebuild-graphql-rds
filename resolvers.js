@@ -20,6 +20,24 @@ const resolver = {
                             throw err;
                         });
         },
+        getUser: (_, args) => {
+            return db.users.findByPk(args.id)
+                .then(data => {
+                    return data.dataValues;
+                })
+                .catch(err => {
+                    throw err;
+                });
+        },
+        getUsers: (_, args) => {
+            return db.users.findAll()
+                        .then(items => {
+                            return items.map(item => item.dataValues);
+                        })
+                        .catch(err => {
+                            throw err;
+                        });
+        },
     },
     Mutation: {
         createTodo: (_, args) => {
@@ -45,6 +63,37 @@ const resolver = {
         },
         deleteTodo: (_, args) => {
             return db.todos.destroy({
+                where: { id: args.id }
+            }).then(data => {
+                return data > 0;
+            })
+            .catch(err => {
+                throw err;
+            })
+        },
+        createUser: (_, args) => {
+            return db.users.create(args.input)
+                .then(data => {
+                    return data.dataValues;
+                })
+                .catch(err => {
+                    throw err;
+                });
+        },
+        updateUser: (_, args) => {
+            return db.users.update(args.input, { return: true, where: { id: args.id } })
+                .then(() => {
+                    return db.users.findByPk(args.id);
+                })
+                .then(data => {
+                    return data.dataValues;
+                })
+                .catch(err => {
+                    throw err;
+                });
+        },
+        deleteUser: (_, args) => {
+            return db.users.destroy({
                 where: { id: args.id }
             }).then(data => {
                 return data > 0;
