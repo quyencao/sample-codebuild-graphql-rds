@@ -1,75 +1,80 @@
-const {
-    DynamoDBEventStore,
-    PubSub
-} = require('aws-lambda-graphql');
 const db = require('./models');
-// const { pubSub } = require('./graphqlServerHelper');
-const eventStore = new DynamoDBEventStore({ eventsTable: process.env.EVENTS_TABLE });
-const pubSub = new PubSub({ eventStore });
+const pubSub = require('./pubSubHelper');
 
 const resolver = {
     Query: {
-        getTodo: (_, args) => {
-            return db.todos.findByPk(args.id)
-                .then(data => {
-                    return data.dataValues;
-                })
-                .catch(err => {
-                    throw err;
-                });
+        getTodo: async (_, args) => {
+            try {
+                const item = await db.todos.findByPk(args.id);
+                return item.dataValues;
+            } catch (err) {
+                throw err;
+            }
         },
         getTodos: (_, args) => {
-            return db.todos.findAll()
-                        .then(items => {
-                            return items.map(item => item.dataValues);
-                        })
-                        .catch(err => {
-                            throw err;
-                        });
+            try {
+                const items = db.todos.findAll();
+                return items.map(item => item.dataValues);
+            } catch (err) {
+                throw err;
+            }
         },
     },
     Mutation: {
-        createTodo: (_, args) => {
-            let fetchData;
-            return db.todos.create(args.input)
-                .then(data => {
-                    fetchData = data.dataValues;
-                    return pubSub.publish('CREATE_TODO', data.dataValues);
-                })
-                .then(() => {
-                    return fetchData;
-                })
-                .catch(err => {
-                    throw err;
+        createTodo: async (_, args) => {
+            try {
+                const type = 'CREATE_TODO';
+                const item = await db.todos.create(args.input);
+                await pubSub.publish(type, {
+                    type,
+                    dataValues: item.dataValues
                 });
-        },
-        updateTodo: (_, args) => {
-            return db.todos.update(args.input, { return: true, where: { id: args.id } })
-                .then(() => {
-                    return db.todos.findByPk(args.id);
-                })
-                .then(data => {
-                    return data.dataValues;
-                })
-                .catch(err => {
-                    throw err;
-                });
-        },
-        deleteTodo: (_, args) => {
-            return db.todos.destroy({
-                where: { id: args.id }
-            }).then(data => {
-                return data > 0;
-            })
-            .catch(err => {
+                return item.dataValues;
+            } catch (err) {
                 throw err;
-            })
+            }
+        },
+        updateTodo: async (_, args) => {
+            try {
+                const type = 'UPDATE_TODO';
+                await db.todos.update(args.input, { return: true, where: { id: args.id } });
+                const item = await db.todos.findByPk(args.id);
+                await pubSub.publish(type, {
+                    type,
+                    dataValues: item.dataValues
+                });
+                return item.dataValues;
+            } catch (err) {
+                throw err;
+            }
+        },
+        deleteTodo: async (_, args) => {
+            try {
+                const type = 'DELETE_TODO';
+                const item = await db.todos.findByPk(args.id);
+                const data = await db.todos.destroy({ where: { id: args.id } });
+                await pubSub.publish(type, {
+                    type,
+                    dataValues: item.dataValues
+                });
+                return data > 0;
+            } catch (err) {
+                throw err;
+            }
         },
     },
     Subscription: {
-        createTodoMessage: {
+        createTodo: {
             resolve: rootValue => rootValue,
             subscribe: pubSub.subscribe('CREATE_TODO')
+        },
+        updateTodo: {
+            resolve: rootValue => rootValue,
+            subscribe: pubSub.subscribe('UPDATE_TODO')
+        },
+        deleteTodo: {
+            resolve: rootValue => rootValue,
+            subscribe: pubSub.subscribe('DELETE_TODO')
         }
     }
 }
