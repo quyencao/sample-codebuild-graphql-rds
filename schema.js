@@ -37,7 +37,7 @@ type Todo {
 
 type TodoSubscriptionPayload {
   type: String!
-  dataValues: Todo!
+  data: Todo!
 }
 
 `;

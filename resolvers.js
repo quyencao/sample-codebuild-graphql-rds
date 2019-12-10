@@ -27,7 +27,7 @@ const resolver = {
                 const item = await db.todos.create(args.input);
                 await pubSub.publish(type, {
                     type,
-                    dataValues: item.dataValues
+                    data: item.dataValues
                 });
                 return item.dataValues;
             } catch (err) {
@@ -41,7 +41,7 @@ const resolver = {
                 const item = await db.todos.findByPk(args.id);
                 await pubSub.publish(type, {
                     type,
-                    dataValues: item.dataValues
+                    data: item.dataValues
                 });
                 return item.dataValues;
             } catch (err) {
@@ -55,7 +55,7 @@ const resolver = {
                 const data = await db.todos.destroy({ where: { id: args.id } });
                 await pubSub.publish(type, {
                     type,
-                    dataValues: item.dataValues
+                    data: item.dataValues
                 });
                 return data > 0;
             } catch (err) {
