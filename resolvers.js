@@ -19,6 +19,22 @@ const resolver = {
                 throw err;
             }
         },
+        getUser: async (_, args) => {
+            try {
+                const item = await db.users.findByPk(args.id);
+                return item.dataValues;
+            } catch (err) {
+                throw err;
+            }
+        },
+        getUsers: async (_, args) => {
+            try {
+                const items = await db.users.findAll();
+                return items.map(item => item.dataValues);
+            } catch (err) {
+                throw err;
+            }
+        },
     },
     Mutation: {
         createTodo: async (_, args) => {
@@ -62,6 +78,47 @@ const resolver = {
                 throw err;
             }
         },
+        createUser: async (_, args) => {
+            try {
+                const type = 'CREATE_USER';
+                const item = await db.users.create(args.input);
+                await pubSub.publish(type, {
+                    type,
+                    payload: item.dataValues
+                });
+                return item.dataValues;
+            } catch (err) {
+                throw err;
+            }
+        },
+        updateUser: async (_, args) => {
+            try {
+                const type = 'UPDATE_USER';
+                await db.users.update(args.input, { return: true, where: { id: args.id } });
+                const item = await db.users.findByPk(args.id);
+                await pubSub.publish(type, {
+                    type,
+                    payload: item.dataValues
+                });
+                return item.dataValues;
+            } catch (err) {
+                throw err;
+            }
+        },
+        deleteUser: async (_, args) => {
+            try {
+                const type = 'DELETE_USER';
+                const item = await db.users.findByPk(args.id);
+                const data = await db.users.destroy({ where: { id: args.id } });
+                await pubSub.publish(type, {
+                    type,
+                    payload: item.dataValues
+                });
+                return data > 0;
+            } catch (err) {
+                throw err;
+            }
+        },
     },
     Subscription: {
         createTodo: {
@@ -75,6 +132,18 @@ const resolver = {
         deleteTodo: {
             resolve: rootValue => rootValue,
             subscribe: pubSub.subscribe('DELETE_TODO')
+        },
+        createUser: {
+            resolve: rootValue => rootValue,
+            subscribe: pubSub.subscribe('CREATE_USER')
+        },
+        updateUser: {
+            resolve: rootValue => rootValue,
+            subscribe: pubSub.subscribe('UPDATE_USER')
+        },
+        deleteUser: {
+            resolve: rootValue => rootValue,
+            subscribe: pubSub.subscribe('DELETE_USER')
         },
     }
 }
