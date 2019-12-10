@@ -15,22 +15,6 @@ tables:
           not_null: true
     primary_keys:
       - id
-  users:
-    fields:
-      - id:
-          type: serial
-          unique: true
-          not_null: true
-      - username:
-          type: text
-          unique: true
-          not_null: true
-      - email:
-          type: text
-          unique: true
-          not_null: true
-    primary_keys:
-      - id
     
 types:
   - name: Todo
@@ -42,13 +26,4 @@ types:
       - name: completed
         type: Boolean
         required: false
-  - name: User
-    ref: users
-    fields:
-      - name: username
-        type: String
-        required: true
-      - name: email
-        type: String
-        required: true
 
