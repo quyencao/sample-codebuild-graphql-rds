@@ -11,9 +11,9 @@ const resolver = {
                 throw err;
             }
         },
-        getTodos: (_, args) => {
+        getTodos: async (_, args) => {
             try {
-                const items = db.todos.findAll();
+                const items = await db.todos.findAll();
                 return items.map(item => item.dataValues);
             } catch (err) {
                 throw err;
@@ -75,7 +75,7 @@ const resolver = {
         deleteTodo: {
             resolve: rootValue => rootValue,
             subscribe: pubSub.subscribe('DELETE_TODO')
-        }
+        },
     }
 }
 
