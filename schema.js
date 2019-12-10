@@ -13,9 +13,9 @@ type Query {
 }
 
 type Subscription {
-  createTodo: SubscriptionPayload!
-  updateTodo: SubscriptionPayload!
-  deleteTodo: SubscriptionPayload!
+  createTodo: TodoSubscriptionPayload!
+  updateTodo: TodoSubscriptionPayload!
+  deleteTodo: TodoSubscriptionPayload!
 }
 
 input CreateTodoInput {
@@ -35,7 +35,7 @@ type Todo {
   completed: Boolean
 }
 
-type SubscriptionPayload {
+type TodoSubscriptionPayload {
   type: String!
   dataValues: Todo!
 }
